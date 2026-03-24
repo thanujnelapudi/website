@@ -55,33 +55,33 @@ const structuredData = {
 };
 ---
 
-<BaseLayout title={`${song.data.title} Lyrics & Chords — Telugu Worship`} description={description} structuredData={structuredData}>
+<BaseLayout title={`${song.title} Lyrics & Chords — Telugu Worship`} description={description} structuredData={structuredData}>
     <article class="song-page">
         <div class="container fade-up">
             <nav class="breadcrumb">
-                <a href="/">Home</a> <span>›</span> <a href="/songs">Songs</a> <span>›</span> <span class="current telugu">{song.data.title}</span>
+                <a href="/">Home</a> <span>›</span> <a href="/songs">Songs</a> <span>›</span> <span class="current telugu">{song.title}</span>
             </nav>
 
             <div class="two-column-layout">
                 <!-- LEFT COLUMN -->
                 <div class="left-column">
                     <header class="song-header">
-                        <h1 class="main-title">{song.data.title}</h1>
-                        <p class="trans-title">{song.data.titleTransliterated}</p>
+                        <h1 class="main-title">{song.title}</h1>
+                        <p class="trans-title">{song.titleTransliterated}</p>
 
                         <div class="metadata-row">
-                            <span class="meta-pill item-ministry">{song.data.ministry}</span>
-                            <span class="meta-pill item-era">{song.data.era}</span>
+                            <span class="meta-pill item-ministry">{ministryName}</span>
+                            <span class="meta-pill item-era">{song.era}</span>
                         </div>
 
                         <div class="actions-row hide-print">
                             <SongActions client:load song={{
-                                slug: song.data.slug,
-                                title: song.data.title,
-                                titleTransliterated: song.data.titleTransliterated,
-                                ministry: song.data.ministry,
-                                mood: song.data.mood || [],
-                                era: song.data.era || 'modern'
+                                slug: song.slug,
+                                title: song.title,
+                                titleTransliterated: song.titleTransliterated,
+                                ministry: ministryName,
+                                mood: song.mood || [],
+                                era: song.era || 'modern'
                             }} />
                         </div>
 
@@ -91,8 +91,8 @@ const structuredData = {
                     <section class="lyrics-section">
                         <ChordLyricsDisplay 
                             client:load 
-                            lyrics={song.data.lyrics} 
-                            chords={song.data.chords} 
+                            lyrics={song.lyrics} 
+                            chords={song.chords} 
                             currentKey="G" 
                         />
                     </section>
@@ -102,14 +102,14 @@ const structuredData = {
                 <div class="right-column hide-print">
                     <div class="sticky-wrapper">
                         
-                        {song.data.chords && song.data.chords.trim() !== '' && (
+                        {song.chords && song.chords.trim() !== '' && (
                             <TransposeWidget client:load initialKey="G" />
                         )}
 
-                        {song.data.bibleVerses && song.data.bibleVerses.length > 0 && (
+                        {song.bibleVerses && song.bibleVerses.length > 0 && (
                             <div class="side-box">
                                 <h2 class="section-heading"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px; margin-bottom:-2px;"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg> Scripture</h2>
-                                {song.data.bibleVerses.map(verse => (
+                                {song.bibleVerses.map(verse => (
                                     <span class="verse-ref">{verse}</span>
                                 ))}
                             </div>
@@ -121,10 +121,10 @@ const structuredData = {
                                 <div class="related-list">
                                     {relatedSongs.map(s => (
                                         <SongCard
-                                            title={s.data.title}
-                                            titleTransliterated={s.data.titleTransliterated}
-                                            slug={s.data.slug}
-                                            ministry={s.data.ministry}
+                                            title={s.title}
+                                            titleTransliterated={s.titleTransliterated}
+                                            slug={s.slug}
+                                            ministry={s.ministry?.name || 'Unknown'}
                                         />
                                     ))}
                                 </div>
