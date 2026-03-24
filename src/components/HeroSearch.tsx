@@ -102,6 +102,23 @@ export default function HeroSearch({ songs }: HeroSearchProps) {
                     position: relative;
                     overflow: hidden;
                     padding: var(--space-xl) var(--space-xl);
+                }
+
+                html[data-theme="dark"] .hero-section {
+                    background: radial-gradient(circle at center, #1a2744 0%, var(--bg) 70%);
+                }
+                html[data-theme="dark"] .hero-section::before {
+                    content: '';
+                    position: absolute;
+                    inset: 0;
+                    background-image: 
+                        repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(255,255,255,0.015) 60px, rgba(255,255,255,0.015) 61px),
+                        repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(255,255,255,0.015) 60px, rgba(255,255,255,0.015) 61px);
+                    pointer-events: none;
+                }
+
+                html[data-theme="light"] .hero-section,
+                html:not([data-theme="dark"]) .hero-section {
                     background: linear-gradient(180deg, #fdf6e3 0%, var(--bg) 100%);
                 }
 

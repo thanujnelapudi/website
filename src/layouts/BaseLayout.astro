@@ -51,9 +51,39 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://keertana
     {structuredData && (
         <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
     )}
-
+    <script is:inline>
+        const theme = (() => {
+            if (typeof localStorage !== 'undefined' && localStorage.getItem('tcl_theme')) {
+                return localStorage.getItem('tcl_theme');
+            }
+            // By default, force light mode if no local storage is found
+            return 'light';
+        })();
+        if (theme === 'light') {
+            document.documentElement.dataset.theme = 'light';
+        } else {
+            document.documentElement.dataset.theme = 'dark';
+        }
+    </script>
     <style is:global>
-        :root {
+        :root[data-theme="dark"] {
+            --bg: #0d1117;
+            --bg-2: #111827;
+            --surface: #161b27;
+            --surface-2: #1e2433;
+            --border: #1e2d3d;
+            --border-hover: #2d4a6e;
+            --text: #e6edf3;
+            --text-muted: #7d8590;
+            --text-subtle: #484f58;
+            --accent: #f0a500;
+            --accent-soft: rgba(240, 165, 0, 0.12);
+            --primary: #4c8eda;
+            --primary-soft: rgba(76, 142, 218, 0.12);
+            --telugu-color: #f0eefc;
+        }
+
+        :root[data-theme="light"], :root {
             --bg: #faf8f3;
             --bg-2: #f3f0e8;
             --surface: #ffffff;

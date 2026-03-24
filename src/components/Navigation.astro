@@ -32,7 +32,19 @@ const currentPath = pathname.slice(1);
                     <path d="m21 21-4.35-4.35"/>
                 </svg>
             </a>
-
+            <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+                <span class="sun">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="4"/>
+                        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+                    </svg>
+                </span>
+                <span class="moon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                    </svg>
+                </span>
+            </button>
             <button class="hamburger" id="mobile-menu-btn" aria-label="Toggle menu">
                 <span class="bar"></span>
                 <span class="bar"></span>
@@ -167,7 +179,61 @@ const currentPath = pathname.slice(1);
         background: var(--surface-2);
     }
 
+    /* Theme Toggle */
+    .theme-toggle {
+        width: 32px;
+        height: 32px;
+        border-radius: 6px;
+        border: 1px solid transparent;
+        background: transparent;
+        color: var(--text);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        position: relative;
+        overflow: hidden;
+        transition: background 0.2s ease, border-color 0.2s ease;
+    }
+    
+    .theme-toggle:hover {
+        background: var(--surface-2);
+        border-color: var(--border);
+    }
 
+    .theme-toggle span {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    html[data-theme="dark"] .moon {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    html[data-theme="dark"] .sun {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    html:not([data-theme="dark"]) .sun {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    html:not([data-theme="dark"]) .moon {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    html[data-theme="light"] .sun {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    html[data-theme="light"] .moon {
+        transform: translateY(0);
+        opacity: 1;
+    }
 
     /* Hamburger */
     .hamburger {
@@ -265,6 +331,14 @@ const currentPath = pathname.slice(1);
             });
         }
 
-
+        const themeBtn = document.getElementById('theme-toggle');
+        if (themeBtn) {
+            themeBtn.addEventListener('click', () => {
+                const current = document.documentElement.dataset.theme;
+                const next = current === 'dark' ? 'light' : 'dark';
+                document.documentElement.dataset.theme = next;
+                localStorage.setItem('tcl_theme', next);
+            });
+        }
     });
 </script>
