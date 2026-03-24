@@ -40,10 +40,7 @@
         <div class="footer-bottom">
             <p>&copy; {new Date().getFullYear()} Telugu Worship.</p>
             
-            <button id="footer-theme-toggle" class="theme-toggle" aria-label="Toggle theme">
-                <span class="sun">☀️ Light Mode</span>
-                <span class="moon">🌙 Dark Mode</span>
-            </button>
+
         </div>
     </div>
 </footer>
@@ -160,74 +157,6 @@
         }
     }
     
-    /* Secondary Theme Toggle */
-    .theme-toggle {
-        background: transparent;
-        border: 1px solid var(--border);
-        color: var(--text-muted);
-        border-radius: 999px;
-        padding: 6px 16px;
-        font-family: var(--font-body);
-        font-size: 0.85rem;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        position: relative;
-        overflow: hidden;
-        height: 32px;
-        min-width: 120px;
-        justify-content: center;
-        transition: border-color 0.2s ease, color 0.2s ease;
-    }
-    .theme-toggle:hover {
-        border-color: var(--border-hover);
-        color: var(--text);
-    }
-    .theme-toggle span {
-        display: block;
-        transition: transform 0.3s ease, opacity 0.3s ease;
-        position: absolute;
-        white-space: nowrap;
-    }
-    html[data-theme="dark"] .moon {
-        transform: translateY(20px);
-        opacity: 0;
-    }
-    html[data-theme="dark"] .sun {
-        transform: translateY(0);
-        opacity: 1;
-        position: static;
-    }
-    html:not([data-theme="dark"]) .sun {
-        transform: translateY(-20px);
-        opacity: 0;
-    }
-    html:not([data-theme="dark"]) .moon {
-        transform: translateY(0);
-        opacity: 1;
-        position: static;
-    }
-    html[data-theme="light"] .sun {
-        transform: translateY(-20px);
-        opacity: 0;
-    }
-    html[data-theme="light"] .moon {
-        transform: translateY(0);
-        opacity: 1;
-        position: static;
-    }
+
 </style>
 
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const themeBtn = document.getElementById('footer-theme-toggle');
-        if (themeBtn) {
-            themeBtn.addEventListener('click', () => {
-                const current = document.documentElement.dataset.theme;
-                const next = current === 'dark' ? 'light' : 'dark';
-                document.documentElement.dataset.theme = next;
-                localStorage.setItem('tcl_theme', next);
-            });
-        }
-    });
-</script>
