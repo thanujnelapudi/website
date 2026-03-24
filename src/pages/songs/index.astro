@@ -1,19 +1,19 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import SongsBrowser from '../../components/SongsBrowser.tsx';
-import { getCollection } from 'astro:content';
+import { getSongs } from '../../utils/sanity';
 
-const allSongs = await getCollection('songs');
+const allSongs = await getSongs();
 
 const serializedSongs = allSongs.map(song => ({
-    id: song.id,
-    title: song.data.title,
-    titleTransliterated: song.data.titleTransliterated,
-    slug: song.data.slug,
-    ministry: song.data.ministry,
-    mood: song.data.mood || [],
-    occasion: song.data.occasion || [],
-    era: song.data.era || 'modern'
+    id: song._id,
+    title: song.title,
+    titleTransliterated: song.titleTransliterated,
+    slug: song.slug,
+    ministry: song.ministry?.name || 'Unknown',
+    mood: song.mood || [],
+    occasion: song.occasion || [],
+    era: song.era || 'modern'
 }));
 ---
 

@@ -1,5 +1,5 @@
 ---
-import { getCollection, type CollectionEntry } from 'astro:content';
+import { getSongs, type SanitySong } from '../../utils/sanity';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ChordLyricsDisplay from '../../components/ChordLyricsDisplay.tsx';
 import TransposeWidget from '../../components/TransposeWidget.tsx';
@@ -7,32 +7,55 @@ import SongCard from '../../components/SongCard.astro';
 import SongActions from '../../components/SongActions.tsx';
 
 export async function getStaticPaths() {
-    const songs = await getCollection('songs');
+    const songs = await getSongs();
     return songs.map(song => ({
-        params: { slug: song.data.slug },
+        params: { slug: song.slug },
         props: { song, allSongs: songs },
     }));
 }
 
 interface Props {
-    song: CollectionEntry<'songs'>;
-    allSongs: CollectionEntry<'songs'>[];
+    song: SanitySong;
+    allSongs: SanitySong[];
 }
 
 const { song, allSongs } = Astro.props;
 
 const relatedSongs = allSongs
-    .filter(s => s.data.slug !== song.data.slug)
+    .filter(s => s.slug !== song.slug)
     .filter(s => 
-        s.data.ministry === song.data.ministry || 
-        (s.data.mood && song.data.mood && s.data.mood.some(m => song.data.mood.includes(m)))
+        (s.ministry && song.ministry && s.ministry._id === song.ministry._id) || 
+        (s.mood && song.mood && s.mood.some((m: string) => song.mood?.includes(m)))
     )
     .slice(0, 4);
 
-const description = `${song.data.title} (${song.data.titleTransliterated}) by ${song.data.ministry}. Lyrics & chords for Telugu Christian worship.`;
+const ministryName = song.ministry?.name || 'Unknown';
+const artistName = song.artist?.name || 'Unknown';
+const description = `${song.title} (${song.titleTransliterated}) by ${ministryName}. Lyrics & chords for Telugu Christian worship.`;
+
+const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "MusicComposition",
+    "name": song.title,
+    "alternateName": song.titleTransliterated,
+    "composer": [
+        {
+            "@type": "Person",
+            "name": artistName
+        }
+    ],
+    "publisher": {
+        "@type": "Organization",
+        "name": ministryName
+    },
+    "genre": [...(song.mood || []), ...(song.occasion || [])].join(", "),
+    "keywords": `${song.title}, ${song.titleTransliterated}, Telugu Christian Songs, ${ministryName}, ${artistName}, ${[...(song.mood || []), ...(song.occasion || [])].join(", ")}`,
+    "text": song.lyrics,
+    "isFamilyFriendly": true
+};
 ---
 
-<BaseLayout title={`${song.data.title} Lyrics & Chords — Telugu Worship`} description={description}>
+<BaseLayout title={`${song.data.title} Lyrics & Chords — Telugu Worship`} description={description} structuredData={structuredData}>
     <article class="song-page">
         <div class="container fade-up">
             <nav class="breadcrumb">

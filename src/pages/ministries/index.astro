@@ -1,12 +1,12 @@
 ---
-import { getCollection } from 'astro:content';
+import { getMinistries, getSongs } from '../../utils/sanity';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
-const allMinistries = await getCollection('ministries');
-const allSongs = await getCollection('songs');
+const allMinistries = await getMinistries();
+const allSongs = await getSongs();
 
 const ministriesWithCounts = allMinistries.map(ministry => {
-    const count = allSongs.filter(song => song.data.ministry === ministry.data.name).length;
+    const count = allSongs.filter(song => song.ministry?._id === ministry._id).length;
     return { ...ministry, songCount: count };
 }).sort((a, b) => b.songCount - a.songCount);
 
@@ -29,9 +29,9 @@ const getMinistryColor = (name: string) => {
             
             <div class="ministries-list">
                 {ministriesWithCounts.map(m => (
-                    <a href={`/ministries/${m.id}`} class="ministry-banner" style={`border-left-color: ${getMinistryColor(m.data.name)}`}>
+                    <a href={`/ministries/${m.slug}`} class="ministry-banner" style={`border-left-color: ${getMinistryColor(m.name)}`}>
                         <div class="banner-content">
-                            <h2 class="m-name">{m.data.name}</h2>
+                            <h2 class="m-name">{m.name}</h2>
                             <div class="m-meta">
                                 <span class="m-count">{m.songCount} Songs</span>
                                 <span class="m-chevron">

@@ -1,17 +1,20 @@
 ---
 import Navigation from '../components/Navigation.astro';
 import Footer from '../components/Footer.astro';
+import Analytics from '@vercel/analytics/astro';
 
 interface Props {
   title: string;
   description?: string;
   image?: string;
+  structuredData?: any;
 }
 
 const { 
   title, 
   description = "Telugu Christian worship songs, lyrics, and chords.", 
-  image = "/og-image.jpg" 
+  image = "/og-image.jpg",
+  structuredData
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://keerthana.vercel.app');
@@ -45,6 +48,9 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://keerthan
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@400;500;600&family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
+    {structuredData && (
+        <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+    )}
     <script is:inline>
         const theme = (() => {
             if (typeof localStorage !== 'undefined' && localStorage.getItem('tcl_theme')) {
@@ -252,5 +258,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://keerthan
         <slot />
     </main>
     <Footer />
+    <Analytics />
 </body>
 </html>

@@ -1,23 +1,28 @@
 ---
-import { getCollection } from 'astro:content';
+import { getMinistries, getSongs, getArtists, type SanityMinistry, type SanitySong, type SanityArtist } from '../../utils/sanity';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import SongCard from '../../components/SongCard.astro';
-import ArtistPill from '../../components/ArtistPill.astro';
 
 export async function getStaticPaths() {
-    const ministries = await getCollection('ministries');
-    const songs = await getCollection('songs');
-    const artists = await getCollection('artists');
+    const ministries = await getMinistries();
+    const songs = await getSongs();
+    const artists = await getArtists();
     
     return ministries.map(ministry => {
-        const ministrySongs = songs.filter(song => song.data.ministry === ministry.data.name);
-        const ministryArtists = artists.filter(artist => artist.data.ministry === ministry.data.name);
+        const ministrySongs = songs.filter(song => song.ministry?._id === ministry._id);
+        const ministryArtists = artists.filter(artist => artist.ministry?._id === ministry._id);
         
         return {
-            params: { slug: ministry.id },
+            params: { slug: ministry.slug },
             props: { ministry, songs: ministrySongs, artists: ministryArtists }
         };
     });
+}
+
+interface Props {
+    ministry: SanityMinistry;
+    songs: SanitySong[];
+    artists: SanityArtist[];
 }
 
 const { ministry, songs, artists } = Astro.props;
@@ -29,17 +34,26 @@ const getGradientClass = (name: string) => {
     if (l.includes('raj')) return 'grad-raj';
     return 'grad-default';
 };
+
+const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": ministry.name,
+    "description": ministry.description,
+    "foundingDate": ministry.founded,
+    "url": ministry.website || `https://keerthana.vercel.app/ministries/${ministry.slug}`
+};
 ---
 
-<BaseLayout title={`${ministry.data.name} Songs — Telugu Worship`}>
+<BaseLayout title={`${ministry.name} Songs — Telugu Worship`} structuredData={structuredData}>
     <div class="ministry-page">
         <!-- HEADER SECTION: Full-width Hero Banner -->
-        <header class={`hero-banner ${getGradientClass(ministry.data.name)}`}>
+        <header class={`hero-banner ${getGradientClass(ministry.name)}`}>
             <div class="hero-content fade-up">
                 <nav class="breadcrumb">
-                    <a href="/">Home</a> <span>›</span> <a href="/ministries">Ministries</a> <span>›</span> <span class="current">{ministry.data.name}</span>
+                    <a href="/">Home</a> <span>›</span> <a href="/ministries">Ministries</a> <span>›</span> <span class="current">{ministry.name}</span>
                 </nav>
-                <h1 class="main-title">{ministry.data.name}</h1>
+                <h1 class="main-title">{ministry.name}</h1>
                 <div class="hero-meta">
                     <span class="count-pill">{songs.length} Songs</span>
                 </div>
@@ -47,13 +61,13 @@ const getGradientClass = (name: string) => {
         </header>
 
         <div class="container fade-up" style="animation-delay: 0.1s;">
-            {ministry.data.description && (
+            {ministry.description && (
                 <div class="about-section">
-                    <p class="description">{ministry.data.description}</p>
+                    <p class="description">{ministry.description}</p>
                     <div class="metadata-row">
-                        {ministry.data.founded && <span class="pill">Founded {ministry.data.founded}</span>}
-                        {ministry.data.website && (
-                            <a href={ministry.data.website} target="_blank" rel="noopener noreferrer" class="pill site-link">
+                        {ministry.founded && <span class="pill">Founded {ministry.founded}</span>}
+                        {ministry.website && (
+                            <a href={ministry.website} target="_blank" rel="noopener noreferrer" class="pill site-link">
                                 Visit Website ↗
                             </a>
                         )}
@@ -67,8 +81,8 @@ const getGradientClass = (name: string) => {
                     <h2 class="section-title">Artists</h2>
                     <div class="artists-row">
                         {artists.map(artist => (
-                            <a href={`/artists/${artist.id}`} class="artist-pill-link">
-                                {artist.data.name}
+                            <a href={`/artists/${artist.slug}`} class="artist-pill-link">
+                                {artist.name}
                             </a>
                         ))}
                     </div>
@@ -81,12 +95,12 @@ const getGradientClass = (name: string) => {
                 <div class="song-list-column">
                     {songs.map(s => (
                         <SongCard 
-                            title={s.data.title}
-                            titleTransliterated={s.data.titleTransliterated}
-                            slug={s.data.slug}
-                            ministry={s.data.ministry}
-                            mood={s.data.mood || []}
-                            era={s.data.era}
+                            title={s.title}
+                            titleTransliterated={s.titleTransliterated}
+                            slug={s.slug}
+                            ministry={s.ministry?.name || 'Unknown'}
+                            mood={s.mood || []}
+                            era={s.era}
                         />
                     ))}
                 </div>

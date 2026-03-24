@@ -4,17 +4,17 @@ import HeroSearch from '../components/HeroSearch.tsx';
 import FeaturedSongs from '../components/FeaturedSongs.astro';
 import BrowseBySection from '../components/BrowseBySection.astro';
 import RecentSongs from '../components/RecentSongs.astro';
-import { getCollection } from 'astro:content';
+import { getSongs } from '../utils/sanity';
 
-const allSongs = await getCollection('songs');
+const allSongs = await getSongs();
 
 // Map to simplified objects for React props
 const searchableSongs = allSongs.map(song => ({
-    id: song.id,
-    title: song.data.title,
-    titleTransliterated: song.data.titleTransliterated,
-    slug: song.data.slug,
-    ministry: song.data.ministry
+    id: song._id,
+    title: song.title,
+    titleTransliterated: song.titleTransliterated,
+    slug: song.slug,
+    ministry: song.ministry?.name || 'Unknown'
 }));
 
 const ministriesPills = [

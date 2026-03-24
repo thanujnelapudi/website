@@ -1,58 +1,73 @@
 ---
-import { getCollection } from 'astro:content';
+import { getArtists, getSongs, type SanityArtist, type SanitySong } from '../../utils/sanity';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import SongCard from '../../components/SongCard.astro';
 
 export async function getStaticPaths() {
-    const artists = await getCollection('artists');
-    const songs = await getCollection('songs');
-    const ministries = await getCollection('ministries');
+    const artists = await getArtists();
+    const songs = await getSongs();
     
     return artists.map(artist => {
-        const artistSongs = songs.filter(song => song.data.artist === artist.data.name);
-        const ministryObj = ministries.find(m => m.data.name === artist.data.ministry);
+        const artistSongs = songs.filter(song => song.artist?._id === artist._id);
         
         return {
-            params: { slug: artist.id },
-            props: { artist, songs: artistSongs, ministrySlug: ministryObj?.id }
+            params: { slug: artist.slug },
+            props: { artist, songs: artistSongs }
         };
     });
 }
 
-const { artist, songs, ministrySlug } = Astro.props;
+interface Props {
+    artist: SanityArtist;
+    songs: SanitySong[];
+}
+
+const { artist, songs } = Astro.props;
+
+const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": artist.name,
+    "alternateName": artist.nameTransliterated,
+    "description": artist.bio,
+    "affiliation": {
+        "@type": "Organization",
+        "name": artist.ministry?.name || 'Unknown'
+    }
+};
 ---
 
-<BaseLayout title={`${artist.data.name} — Telugu Worship`}>
+<BaseLayout title={`${artist.name} — Telugu Worship`} structuredData={structuredData}>
     <div class="artist-page">
         <div class="container">
             <!-- HEADER SECTION -->
             <header class="artist-header fade-up">
                 <nav class="breadcrumb">
-                    <a href="/">Home</a> <span>›</span> <a href="/artists">Artists</a> <span>›</span> <span class="current">{artist.data.name}</span>
+                    <a href="/">Home</a> <span>›</span> <a href="/artists">Artists</a> <span>›</span> <span class="current">{artist.name}</span>
                 </nav>
 
                 <div class="header-content">
-                    <div class="avatar-large">{artist.data.name.charAt(0).toUpperCase()}</div>
+                    <div class="avatar-large">{artist.name.charAt(0).toUpperCase()}</div>
                     <div class="title-area">
-                        <h1 class="main-title">{artist.data.name}</h1>
-                        <p class="trans-title">{artist.data.nameTransliterated}</p>
+                        <h1 class="main-title">{artist.name}</h1>
+                        <p class="trans-title">{artist.nameTransliterated}</p>
                         
                         <div class="metadata-row">
-                            {ministrySlug ? (
-                                <a href={`/ministries/${ministrySlug}`} class="pill item-ministry link">
-                                    {artist.data.ministry}
+                            {artist.ministry ? (
+                                <a href={`/ministries/${artist.ministry.slug}`} class="pill item-ministry link">
+                                    {artist.ministry.name}
                                 </a>
                             ) : (
-                                <span class="pill item-ministry">{artist.data.ministry}</span>
+                                <span class="pill item-ministry">Unknown Ministry</span>
                             )}
                             <span class="pill count-pill">{songs.length} Songs</span>
                         </div>
                     </div>
                 </div>
 
-                {artist.data.bio && (
+                {artist.bio && (
                     <div class="bio-section">
-                        <p class="bio-text">{artist.data.bio}</p>
+                        <p class="bio-text">{artist.bio}</p>
                     </div>
                 )}
             </header>
@@ -65,12 +80,12 @@ const { artist, songs, ministrySlug } = Astro.props;
                 <div class="song-list-column">
                     {songs.map(s => (
                         <SongCard 
-                            title={s.data.title}
-                            titleTransliterated={s.data.titleTransliterated}
-                            slug={s.data.slug}
-                            ministry={s.data.ministry}
-                            mood={s.data.mood || []}
-                            era={s.data.era}
+                            title={s.title}
+                            titleTransliterated={s.titleTransliterated}
+                            slug={s.slug}
+                            ministry={s.ministry?.name || 'Unknown'}
+                            mood={s.mood || []}
+                            era={s.era}
                         />
                     ))}
                 </div>

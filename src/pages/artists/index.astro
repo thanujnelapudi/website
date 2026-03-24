@@ -1,18 +1,18 @@
 ---
-import { getCollection } from 'astro:content';
+import { getArtists, getSongs } from '../../utils/sanity';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
-const allArtists = await getCollection('artists');
-const allSongs = await getCollection('songs');
+const allArtists = await getArtists();
+const allSongs = await getSongs();
 
 const artistsWithCounts = allArtists.map(artist => {
-    const count = allSongs.filter(song => song.data.artist === artist.data.name).length;
+    const count = allSongs.filter(song => song.artist?._id === artist._id).length;
     return { ...artist, songCount: count };
-}).sort((a, b) => a.data.name.localeCompare(b.data.name));
+}).sort((a, b) => a.name.localeCompare(b.name));
 
 // Group by first letter
 const grouped = artistsWithCounts.reduce((acc, artist) => {
-    const firstLetter = artist.data.name.charAt(0).toUpperCase();
+    const firstLetter = artist.name.charAt(0).toUpperCase();
     if (!acc[firstLetter]) acc[firstLetter] = [];
     acc[firstLetter].push(artist);
     return acc;
@@ -35,12 +35,12 @@ const letters = Object.keys(grouped).sort();
                         <h2 class="letter-heading">{letter}</h2>
                         <div class="letter-list">
                             {grouped[letter].map(a => (
-                                <a href={`/artists/${a.id}`} class="artist-list-item">
+                                <a href={`/artists/${a.slug}`} class="artist-list-item">
                                     <div class="a-left">
-                                        <div class="a-avatar">{a.data.name.charAt(0).toUpperCase()}</div>
+                                        <div class="a-avatar">{a.name.charAt(0).toUpperCase()}</div>
                                         <div class="a-info">
-                                            <span class="a-name">{a.data.name}</span>
-                                            {a.data.ministry && <span class="a-min">{a.data.ministry}</span>}
+                                            <span class="a-name">{a.name}</span>
+                                            {a.ministry && <span class="a-min">{a.ministry.name}</span>}
                                         </div>
                                     </div>
                                     <span class="a-count">{a.songCount} {a.songCount === 1 ? 'Song' : 'Songs'}</span>
