@@ -1,0 +1,269 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SongCard from '../../components/SongCard.astro';
+import ArtistPill from '../../components/ArtistPill.astro';
+
+export async function getStaticPaths() {
+    const ministries = await getCollection('ministries');
+    const songs = await getCollection('songs');
+    const artists = await getCollection('artists');
+    
+    return ministries.map(ministry => {
+        const ministrySongs = songs.filter(song => song.data.ministry === ministry.data.name);
+        const ministryArtists = artists.filter(artist => artist.data.ministry === ministry.data.name);
+        
+        return {
+            params: { slug: ministry.id },
+            props: { ministry, songs: ministrySongs, artists: ministryArtists }
+        };
+    });
+}
+
+const { ministry, songs, artists } = Astro.props;
+
+const getGradientClass = (name: string) => {
+    const l = name.toLowerCase();
+    if (l.includes('hosanna')) return 'grad-hosanna';
+    if (l.includes('benny')) return 'grad-benny';
+    if (l.includes('raj')) return 'grad-raj';
+    return 'grad-default';
+};
+---
+
+<BaseLayout title={`${ministry.data.name} Songs — Telugu Worship`}>
+    <div class="ministry-page">
+        <!-- HEADER SECTION: Full-width Hero Banner -->
+        <header class={`hero-banner ${getGradientClass(ministry.data.name)}`}>
+            <div class="hero-content fade-up">
+                <nav class="breadcrumb">
+                    <a href="/">Home</a> <span>›</span> <a href="/ministries">Ministries</a> <span>›</span> <span class="current">{ministry.data.name}</span>
+                </nav>
+                <h1 class="main-title">{ministry.data.name}</h1>
+                <div class="hero-meta">
+                    <span class="count-pill">{songs.length} Songs</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="container fade-up" style="animation-delay: 0.1s;">
+            {ministry.data.description && (
+                <div class="about-section">
+                    <p class="description">{ministry.data.description}</p>
+                    <div class="metadata-row">
+                        {ministry.data.founded && <span class="pill">Founded {ministry.data.founded}</span>}
+                        {ministry.data.website && (
+                            <a href={ministry.data.website} target="_blank" rel="noopener noreferrer" class="pill site-link">
+                                Visit Website ↗
+                            </a>
+                        )}
+                    </div>
+                </div>
+            )}
+            
+            <!-- ARTISTS SECTION -->
+            {artists.length > 0 && (
+                <section class="artists-section">
+                    <h2 class="section-title">Artists</h2>
+                    <div class="artists-row">
+                        {artists.map(artist => (
+                            <a href={`/artists/${artist.id}`} class="artist-pill-link">
+                                {artist.data.name}
+                            </a>
+                        ))}
+                    </div>
+                </section>
+            )}
+            
+            <!-- SONGS SECTION -->
+            <section class="songs-section">
+                <h2 class="section-title">Songs</h2>
+                <div class="song-list-column">
+                    {songs.map(s => (
+                        <SongCard 
+                            title={s.data.title}
+                            titleTransliterated={s.data.titleTransliterated}
+                            slug={s.data.slug}
+                            ministry={s.data.ministry}
+                            mood={s.data.mood || []}
+                            era={s.data.era}
+                        />
+                    ))}
+                </div>
+                {songs.length === 0 && (
+                    <div class="empty-state">
+                        <p>No songs found for this ministry yet.</p>
+                    </div>
+                )}
+            </section>
+        </div>
+    </div>
+</BaseLayout>
+
+<style>
+    .ministry-page {
+        background-color: var(--bg);
+        min-height: calc(100vh - 64px);
+    }
+
+    .hero-banner {
+        width: 100%;
+        height: 300px;
+        display: flex;
+        align-items: flex-end;
+        padding-bottom: var(--space-2xl);
+        margin-bottom: var(--space-3xl);
+    }
+    
+    .grad-hosanna { background: linear-gradient(135deg, var(--ministry-hosanna), #8b3a30); }
+    .grad-benny { background: linear-gradient(135deg, var(--ministry-benny), #1a3c5a); }
+    .grad-raj { background: linear-gradient(135deg, var(--ministry-raj), #3a5c40); }
+    .grad-default { background: linear-gradient(135deg, #444, #222); }
+
+    .hero-content {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 0 var(--space-xl);
+        width: 100%;
+        color: white;
+    }
+
+    .breadcrumb {
+        font-size: 0.9rem;
+        color: rgba(255,255,255,0.7);
+        margin-bottom: var(--space-md);
+        font-family: var(--font-body);
+    }
+    .breadcrumb a {
+        color: white;
+        text-decoration: none;
+    }
+    .breadcrumb span { margin: 0 8px; opacity: 0.5; }
+
+    .main-title {
+        font-family: var(--font-display);
+        font-size: clamp(2.5rem, 6vw, 4rem);
+        margin-bottom: 16px;
+        font-weight: 700;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+
+    .hero-meta {
+        display: flex;
+        gap: 16px;
+    }
+
+    .count-pill {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(4px);
+        padding: 6px 16px;
+        border-radius: 999px;
+        font-family: var(--font-body);
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 0 var(--space-xl) var(--space-3xl);
+    }
+
+    .about-section {
+        margin-bottom: 3rem;
+    }
+
+    .description {
+        font-size: 1.1rem;
+        color: var(--text-muted);
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
+        font-family: var(--font-body);
+        max-width: 800px;
+    }
+
+    .metadata-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .pill {
+        padding: 6px 16px;
+        border-radius: 999px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        border: 1px solid var(--border);
+        background: var(--surface);
+        color: var(--text);
+        font-family: var(--font-body);
+    }
+
+    .site-link {
+        color: var(--primary);
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+    .site-link:hover {
+        background: var(--primary);
+        color: #fff;
+        border-color: var(--primary);
+    }
+
+    .artists-section {
+        margin-bottom: 4rem;
+    }
+
+    .section-title {
+        font-family: var(--font-display);
+        font-size: 1.8rem;
+        color: var(--text);
+        margin-bottom: 1.5rem;
+    }
+
+    .artists-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .artist-pill-link {
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        padding: 8px 20px;
+        border-radius: 999px;
+        color: var(--text);
+        text-decoration: none;
+        font-family: var(--font-body);
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+    .artist-pill-link:hover {
+        background: var(--accent-soft);
+        border-color: var(--accent);
+        color: var(--accent);
+        transform: translateY(-2px);
+    }
+
+    .song-list-column {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .empty-state {
+        padding: 4rem 1rem;
+        text-align: center;
+        background: var(--surface);
+        border: 1px dashed var(--border);
+        border-radius: 12px;
+        color: var(--text-muted);
+        font-family: var(--font-body);
+    }
+    
+    @media (max-width: 768px) {
+        .hero-content { padding: 0 var(--space-md); }
+        .container { padding: 0 var(--space-md) var(--space-3xl); }
+    }
+</style>

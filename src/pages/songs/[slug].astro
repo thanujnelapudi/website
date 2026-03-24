@@ -1,0 +1,267 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ChordLyricsDisplay from '../../components/ChordLyricsDisplay.tsx';
+import TransposeWidget from '../../components/TransposeWidget.tsx';
+import SongCard from '../../components/SongCard.astro';
+import SongActions from '../../components/SongActions.tsx';
+
+export async function getStaticPaths() {
+    const songs = await getCollection('songs');
+    return songs.map(song => ({
+        params: { slug: song.data.slug },
+        props: { song, allSongs: songs },
+    }));
+}
+
+interface Props {
+    song: CollectionEntry<'songs'>;
+    allSongs: CollectionEntry<'songs'>[];
+}
+
+const { song, allSongs } = Astro.props;
+
+const relatedSongs = allSongs
+    .filter(s => s.data.slug !== song.data.slug)
+    .filter(s => 
+        s.data.ministry === song.data.ministry || 
+        (s.data.mood && song.data.mood && s.data.mood.some(m => song.data.mood.includes(m)))
+    )
+    .slice(0, 4);
+
+const description = `${song.data.title} (${song.data.titleTransliterated}) by ${song.data.ministry}. Lyrics & chords for Telugu Christian worship.`;
+---
+
+<BaseLayout title={`${song.data.title} Lyrics & Chords — Telugu Worship`} description={description}>
+    <article class="song-page">
+        <div class="container fade-up">
+            <nav class="breadcrumb">
+                <a href="/">Home</a> <span>›</span> <a href="/songs">Songs</a> <span>›</span> <span class="current telugu">{song.data.title}</span>
+            </nav>
+
+            <div class="two-column-layout">
+                <!-- LEFT COLUMN -->
+                <div class="left-column">
+                    <header class="song-header">
+                        <h1 class="main-title">{song.data.title}</h1>
+                        <p class="trans-title">{song.data.titleTransliterated}</p>
+
+                        <div class="metadata-row">
+                            <span class="meta-pill item-ministry">{song.data.ministry}</span>
+                            <span class="meta-pill item-era">{song.data.era}</span>
+                        </div>
+
+                        <div class="actions-row hide-print">
+                            <SongActions client:load song={{
+                                slug: song.data.slug,
+                                title: song.data.title,
+                                titleTransliterated: song.data.titleTransliterated,
+                                ministry: song.data.ministry,
+                                mood: song.data.mood || [],
+                                era: song.data.era || 'modern'
+                            }} />
+                        </div>
+
+                        <div class="divider"></div>
+                    </header>
+
+                    <section class="lyrics-section">
+                        <ChordLyricsDisplay 
+                            client:load 
+                            lyrics={song.data.lyrics} 
+                            chords={song.data.chords} 
+                            currentKey="G" 
+                        />
+                    </section>
+                </div>
+
+                <!-- RIGHT COLUMN -->
+                <div class="right-column hide-print">
+                    <div class="sticky-wrapper">
+                        
+                        {song.data.chords && song.data.chords.trim() !== '' && (
+                            <TransposeWidget client:load initialKey="G" />
+                        )}
+
+                        {song.data.bibleVerses && song.data.bibleVerses.length > 0 && (
+                            <div class="side-box">
+                                <h2 class="section-heading"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px; margin-bottom:-2px;"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg> Scripture</h2>
+                                {song.data.bibleVerses.map(verse => (
+                                    <span class="verse-ref">{verse}</span>
+                                ))}
+                            </div>
+                        )}
+
+                        {relatedSongs.length > 0 && (
+                            <div class="side-box related-box">
+                                <h2 class="section-heading" style="padding: 0 20px;">More Songs</h2>
+                                <div class="related-list">
+                                    {relatedSongs.map(s => (
+                                        <SongCard
+                                            title={s.data.title}
+                                            titleTransliterated={s.data.titleTransliterated}
+                                            slug={s.data.slug}
+                                            ministry={s.data.ministry}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </article>
+</BaseLayout>
+
+<style>
+    .song-page {
+        padding: var(--space-3xl) 0;
+        background-color: var(--bg);
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 var(--space-xl);
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            padding: 0 var(--space-md);
+        }
+    }
+
+    .breadcrumb {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        margin-bottom: var(--space-xl);
+        font-family: var(--font-body);
+    }
+    .breadcrumb a {
+        color: var(--text-subtle);
+        text-decoration: none;
+        transition: color 0.2s ease;
+    }
+    .breadcrumb a:hover {
+        color: var(--text);
+    }
+    .breadcrumb span {
+        margin: 0 8px;
+        color: var(--border);
+    }
+    .breadcrumb .current {
+        color: var(--telugu-color);
+        font-family: var(--font-telugu);
+    }
+
+    /* Layout */
+    .two-column-layout {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2xl);
+    }
+    
+    @media (min-width: 1024px) {
+        .two-column-layout {
+            flex-direction: row;
+            align-items: flex-start;
+        }
+        .left-column {
+            width: 65%;
+            padding-right: var(--space-xl);
+            border-right: 1px solid var(--border);
+        }
+        .right-column {
+            width: 35%;
+        }
+    }
+
+    /* Left Column Elements */
+    .main-title {
+        font-family: var(--font-telugu);
+        font-size: clamp(1.8rem, 4vw, 2.8rem);
+        color: var(--telugu-color);
+        font-weight: 700;
+        line-height: 1.3;
+        margin-bottom: 8px;
+    }
+
+    .trans-title {
+        font-size: 1.1rem;
+        color: var(--text-muted);
+        font-family: var(--font-body);
+        margin-bottom: 24px;
+    }
+
+    .metadata-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 24px;
+    }
+
+    .actions-row {
+        margin-bottom: 24px;
+    }
+
+    .divider {
+        height: 1px;
+        background: var(--border);
+        margin: 24px 0 32px 0;
+    }
+
+    /* Right Column Elements */
+    .sticky-wrapper {
+        position: sticky;
+        top: 100px;
+    }
+
+    .side-box {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 20px 0;
+        margin-bottom: 16px;
+    }
+    .side-box > *:not(.related-list) {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    .verse-ref {
+        display: block;
+        color: var(--accent);
+        font-family: var(--font-body);
+        font-weight: 600;
+        font-size: 0.95rem;
+        margin-bottom: 8px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--surface-2);
+    }
+    .verse-ref:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .related-box {
+        padding: 20px 0;
+    }
+    .related-list {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    @media print {
+        .hide-print {
+            display: none !important;
+        }
+        .left-column {
+            width: 100%;
+            border: none;
+            padding: 0;
+        }
+    }
+</style>

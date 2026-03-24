@@ -1,0 +1,174 @@
+---
+import SongCard from './SongCard.astro';
+import { getCollection } from 'astro:content';
+
+const allSongs = await getCollection('songs');
+const featuredSongs = allSongs.filter(song => song.data.featured);
+const displaySongs = featuredSongs.length > 0 ? featuredSongs : allSongs.slice(0, 6);
+
+const topFeatured = displaySongs[0];
+const restFeatured = displaySongs.slice(1);
+
+let ministryClass = 'default';
+if (topFeatured) {
+    const ministryLower = topFeatured.data.ministry.toLowerCase();
+    if (ministryLower.includes('hosanna')) ministryClass = 'hosanna';
+    else if (ministryLower.includes('benny')) ministryClass = 'benny';
+    else if (ministryLower.includes('raj')) ministryClass = 'raj';
+}
+---
+
+<section class="home-section">
+    <div class="container fade-up" style={{ animationDelay: '0.1s' }}>
+        <span class="section-label">Featured Songs</span>
+        <h2 class="section-heading">This Week's Picks</h2>
+        
+        {topFeatured && (
+        <a href={`/songs/${topFeatured.data.slug}`} class="large-featured-card">
+            <div class={`color-block min-${ministryClass}`}>
+                <span class="cross-centered"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M5 8h14"/></svg></span>
+            </div>
+            <div class="featured-info">
+                <h3 class="featured-title">{topFeatured.data.title}</h3>
+                <p class="featured-ministry">{topFeatured.data.ministry}</p>
+                <button class="view-btn">View Lyrics &rarr;</button>
+            </div>
+        </a>
+        )}
+
+        {restFeatured.length > 0 && (
+        <div class="song-list">
+            {restFeatured.map((song, i) => (
+                <div class="fade-up" style={`animation-delay: ${0.2 + (i * 0.04)}s`}>
+                    <SongCard
+                        title={song.data.title}
+                        titleTransliterated={song.data.titleTransliterated}
+                        slug={song.data.slug}
+                        ministry={song.data.ministry}
+                        mood={song.data.mood}
+                        era={song.data.era}
+                    />
+                </div>
+            ))}
+        </div>
+        )}
+    </div>
+</section>
+
+<style>
+    .home-section {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: var(--space-3xl) var(--space-xl);
+    }
+    
+    @media (max-width: 768px) {
+        .home-section {
+            padding: var(--space-xl) var(--space-md);
+        }
+    }
+    
+    .large-featured-card {
+        display: flex;
+        height: 200px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        overflow: hidden;
+        text-decoration: none;
+        margin-bottom: var(--space-md);
+        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+    
+    .large-featured-card:hover {
+        transform: translateY(-2px);
+        border-color: var(--border-hover);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    
+    .large-featured-card:hover .view-btn {
+        filter: brightness(1.1);
+    }
+    
+    .color-block {
+        width: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        background-color: var(--ministry-default);
+    }
+    .min-hosanna { background-color: var(--ministry-hosanna); }
+    .min-benny { background-color: var(--ministry-benny); }
+    .min-raj { background-color: var(--ministry-raj); }
+    
+    .cross-centered {
+        color: #fff;
+        font-size: 2.5rem;
+        opacity: 0.5;
+    }
+    
+    .featured-info {
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        flex: 1;
+        position: relative;
+    }
+    
+    .featured-title {
+        font-family: var(--font-telugu);
+        font-size: clamp(1.4rem, 4vw, 1.8rem);
+        color: var(--telugu-color);
+        font-weight: 700;
+        margin-bottom: 4px;
+        line-height: 1.3;
+    }
+    
+    .featured-ministry {
+        font-family: var(--font-body);
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    
+    .view-btn {
+        position: absolute;
+        bottom: 24px;
+        right: 24px;
+        background: var(--accent);
+        color: white;
+        border: none;
+        border-radius: 999px;
+        padding: 8px 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: filter 0.2s ease;
+    }
+
+    @media (max-width: 600px) {
+        .large-featured-card {
+            flex-direction: column;
+            height: auto;
+        }
+        .color-block {
+            width: 100%;
+            height: 60px;
+        }
+        .view-btn {
+            position: relative;
+            bottom: 0;
+            right: 0;
+            margin-top: 16px;
+            align-self: flex-start;
+        }
+    }
+    
+    .song-list {
+        display: flex;
+        flex-direction: column;
+    }
+</style>

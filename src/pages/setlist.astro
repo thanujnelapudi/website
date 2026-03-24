@@ -1,0 +1,18 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SetlistBuilder from '../components/SetlistBuilder.tsx';
+---
+
+<BaseLayout title="Setlist Builder — Telugu Worship">
+    <div class="page-container">
+        <SetlistBuilder client:load />
+    </div>
+</BaseLayout>
+
+<style>
+    .page-container {
+        padding: 4rem 0 6rem;
+        background-color: var(--color-bg);
+        min-height: calc(100vh - 200px);
+    }
+</style>

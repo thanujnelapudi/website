@@ -1,0 +1,183 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const allArtists = await getCollection('artists');
+const allSongs = await getCollection('songs');
+
+const artistsWithCounts = allArtists.map(artist => {
+    const count = allSongs.filter(song => song.data.artist === artist.data.name).length;
+    return { ...artist, songCount: count };
+}).sort((a, b) => a.data.name.localeCompare(b.data.name));
+
+// Group by first letter
+const grouped = artistsWithCounts.reduce((acc, artist) => {
+    const firstLetter = artist.data.name.charAt(0).toUpperCase();
+    if (!acc[firstLetter]) acc[firstLetter] = [];
+    acc[firstLetter].push(artist);
+    return acc;
+}, {} as Record<string, typeof artistsWithCounts>);
+
+const letters = Object.keys(grouped).sort();
+---
+
+<BaseLayout title="Artists — Telugu Worship">
+    <div class="artists-page">
+        <div class="container fade-up">
+            <header class="page-header">
+                <h1 class="page-title">Browse Artists</h1>
+                <p class="page-subtitle">Discover Telugu Christian singers, songwriters, and composers who have blessed the church.</p>
+            </header>
+            
+            <div class="artists-dictionary">
+                {letters.map(letter => (
+                    <div class="letter-group">
+                        <h2 class="letter-heading">{letter}</h2>
+                        <div class="letter-list">
+                            {grouped[letter].map(a => (
+                                <a href={`/artists/${a.id}`} class="artist-list-item">
+                                    <div class="a-left">
+                                        <div class="a-avatar">{a.data.name.charAt(0).toUpperCase()}</div>
+                                        <div class="a-info">
+                                            <span class="a-name">{a.data.name}</span>
+                                            {a.data.ministry && <span class="a-min">{a.data.ministry}</span>}
+                                        </div>
+                                    </div>
+                                    <span class="a-count">{a.songCount} {a.songCount === 1 ? 'Song' : 'Songs'}</span>
+                                </a>
+                            ))}
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    </div>
+</BaseLayout>
+
+<style>
+    .artists-page {
+        padding: var(--space-3xl) 0;
+        background-color: var(--bg);
+        min-height: calc(100vh - 200px);
+    }
+    
+    .page-header {
+        margin-bottom: var(--space-3xl);
+        text-align: center;
+    }
+    .page-title {
+        font-size: clamp(2rem, 5vw, 3rem);
+        font-family: var(--font-display);
+        color: var(--text);
+        margin-bottom: 16px;
+    }
+    .page-subtitle {
+        color: var(--text-muted);
+        font-size: 1.1rem;
+        max-width: 600px;
+        margin: 0 auto;
+        font-family: var(--font-body);
+        line-height: 1.6;
+    }
+
+    .artists-dictionary {
+        display: flex;
+        flex-direction: column;
+        gap: 3rem;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .letter-group {
+        position: relative;
+    }
+
+    .letter-heading {
+        font-family: var(--font-display);
+        font-size: 2rem;
+        color: var(--text);
+        margin-bottom: 16px;
+        padding-bottom: 8px;
+        border-bottom: 2px solid var(--border);
+        position: sticky;
+        top: 64px;
+        background: var(--bg);
+        z-index: 10;
+        padding-top: 16px;
+    }
+
+    .letter-list {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .artist-list-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 16px;
+        height: 64px;
+        text-decoration: none;
+        border-bottom: 1px solid var(--border);
+        transition: background 0.2s ease;
+        border-radius: 0;
+    }
+
+    .artist-list-item:last-child {
+        border-bottom: none;
+    }
+
+    .artist-list-item:hover {
+        background: var(--surface-2);
+    }
+
+    .a-left {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .a-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        color: var(--text-muted);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--font-display);
+        font-size: 1rem;
+        font-weight: 600;
+        flex-shrink: 0;
+    }
+
+    .a-info {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .a-name {
+        font-family: var(--font-body);
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: var(--text);
+    }
+
+    .a-min {
+        font-family: var(--font-body);
+        font-size: 0.72rem;
+        color: var(--text-subtle);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-top: 2px;
+    }
+
+    .a-count {
+        font-family: var(--font-body);
+        font-size: 0.85rem;
+        color: var(--text-subtle);
+    }
+</style>

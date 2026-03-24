@@ -1,0 +1,52 @@
+---
+interface Props {
+    name: string;
+    slug: string;
+}
+
+const { name, slug } = Astro.props;
+---
+
+<a href={`/artists/${slug}`} class="artist-pill">
+    <div class="avatar">{name.charAt(0).toUpperCase()}</div>
+    <span class="name">{name}</span>
+</a>
+
+<style>
+    .artist-pill {
+        display: inline-flex;
+        align-items: center;
+        background-color: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: 30px;
+        padding: 0.4rem 1.2rem 0.4rem 0.4rem;
+        text-decoration: none;
+        color: var(--color-text);
+        transition: all 0.2s ease;
+        gap: 0.8rem;
+    }
+    
+    .artist-pill:hover {
+        border-color: var(--color-primary);
+        background-color: var(--color-surface-2);
+        transform: translateY(-2px);
+    }
+    
+    .avatar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background-color: var(--color-primary);
+        color: #fff;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+    
+    .name {
+        font-weight: 500;
+        font-size: 0.95rem;
+    }
+</style>

@@ -1,0 +1,344 @@
+---
+const pathname = new URL(Astro.request.url).pathname;
+const currentPath = pathname.slice(1);
+---
+<header class="header">
+    <div class="nav-container">
+        <!-- Zone 1 - LEFT: Logo -->
+        <a href="/" class="logo">
+            <span class="cross">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <path d="M12 2v20M2 9h20"/>
+                </svg>
+            </span>
+            <span class="logo-text">Telugu Worship</span>
+        </a>
+        
+        <!-- Zone 2 - CENTER: Desktop Links -->
+        <nav class="desktop-nav">
+            <a href="/" class={currentPath === '' ? 'active' : ''}>Home</a>
+            <a href="/songs" class={currentPath.startsWith('songs') ? 'active' : ''}>Songs</a>
+            <a href="/artists" class={currentPath.startsWith('artists') ? 'active' : ''}>Artists</a>
+            <a href="/ministries" class={currentPath.startsWith('ministries') ? 'active' : ''}>Ministries</a>
+            <a href="/setlist" class={currentPath.startsWith('setlist') ? 'active' : ''}>Setlist</a>
+            <a href="/favorites" class={currentPath.startsWith('favorites') ? 'active' : ''}>Favorites</a>
+        </nav>
+        
+        <!-- Zone 3 - RIGHT: Actions -->
+        <div class="actions">
+            <a href="/songs" class="action-icon" aria-label="Search">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"/>
+                    <path d="m21 21-4.35-4.35"/>
+                </svg>
+            </a>
+            <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+                <span class="sun">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="4"/>
+                        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+                    </svg>
+                </span>
+                <span class="moon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                    </svg>
+                </span>
+            </button>
+            <button class="hamburger" id="mobile-menu-btn" aria-label="Toggle menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Mobile Drawer -->
+    <div class="mobile-nav" id="mobile-menu">
+        <a href="/" class={currentPath === '' ? 'active' : ''}>Home</a>
+        <a href="/songs" class={currentPath.startsWith('songs') ? 'active' : ''}>Songs</a>
+        <a href="/artists" class={currentPath.startsWith('artists') ? 'active' : ''}>Artists</a>
+        <a href="/ministries" class={currentPath.startsWith('ministries') ? 'active' : ''}>Ministries</a>
+        <a href="/setlist" class={currentPath.startsWith('setlist') ? 'active' : ''}>Setlist</a>
+        <a href="/favorites" class={currentPath.startsWith('favorites') ? 'active' : ''}>Favorites</a>
+    </div>
+</header>
+
+<style>
+    .header {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        height: 64px;
+        background: rgba(13, 17, 23, 0.85); /* Default fallback */
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border);
+        transition: background 0.3s ease, border-color 0.3s ease;
+    }
+    
+    @supports (background: color-mix(in srgb, black, white)) {
+        .header {
+            background: color-mix(in srgb, var(--bg) 85%, transparent);
+        }
+    }
+
+    .nav-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        max-width: 1100px;
+        height: 100%;
+        margin: 0 auto;
+        padding: 0 var(--space-xl);
+    }
+
+    @media (max-width: 768px) {
+        .nav-container {
+            padding: 0 var(--space-md);
+        }
+    }
+
+    /* Zone 1: Logo */
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        text-decoration: none;
+        color: var(--text);
+    }
+    .cross {
+        color: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .logo-text {
+        font-family: var(--font-display);
+        font-size: 1.3rem;
+        font-weight: 600;
+        line-height: 1;
+    }
+
+    /* Zone 2: Desktop Nav */
+    .desktop-nav {
+        display: flex;
+        align-items: center;
+        gap: 32px;
+        height: 100%;
+    }
+    @media (max-width: 767px) {
+        .desktop-nav {
+            display: none;
+        }
+    }
+
+    .desktop-nav a {
+        font-family: var(--font-body);
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: var(--text-muted);
+        text-decoration: none;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        border-bottom: 2px solid transparent;
+        transition: color 0.2s ease;
+    }
+
+    .desktop-nav a:hover {
+        color: var(--text);
+    }
+
+    .desktop-nav a.active {
+        color: var(--accent);
+        border-bottom-color: var(--accent);
+    }
+
+    /* Zone 3: Actions */
+    .actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .action-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        color: var(--text);
+        text-decoration: none;
+        border-radius: 6px;
+        transition: background 0.2s ease;
+    }
+
+    .action-icon:hover {
+        background: var(--surface-2);
+    }
+
+    /* Theme Toggle */
+    .theme-toggle {
+        width: 32px;
+        height: 32px;
+        border-radius: 6px;
+        border: 1px solid transparent;
+        background: transparent;
+        color: var(--text);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        position: relative;
+        overflow: hidden;
+        transition: background 0.2s ease, border-color 0.2s ease;
+    }
+    
+    .theme-toggle:hover {
+        background: var(--surface-2);
+        border-color: var(--border);
+    }
+
+    .theme-toggle span {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    html[data-theme="dark"] .moon {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    html[data-theme="dark"] .sun {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    html:not([data-theme="dark"]) .sun {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    html:not([data-theme="dark"]) .moon {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    html[data-theme="light"] .sun {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    html[data-theme="light"] .moon {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    /* Hamburger */
+    .hamburger {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 4px;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        width: 32px;
+        height: 32px;
+        padding: 4px; border-radius: 6px;
+    }
+    .hamburger:hover {
+        background: var(--surface-2);
+    }
+    @media (min-width: 768px) {
+        .hamburger {
+            display: none;
+        }
+    }
+    .bar {
+        width: 24px;
+        height: 2px;
+        background-color: var(--text);
+        transition: all 0.3s ease;
+        display: block;
+    }
+    .hamburger.open .bar:nth-child(1) {
+        transform: translateY(6px) rotate(45deg);
+    }
+    .hamburger.open .bar:nth-child(2) {
+        opacity: 0;
+    }
+    .hamburger.open .bar:nth-child(3) {
+        transform: translateY(-6px) rotate(-45deg);
+    }
+
+    /* Mobile Nav */
+    .mobile-nav {
+        display: none;
+        flex-direction: column;
+        background: var(--bg);
+        border-bottom: 1px solid var(--border);
+        position: absolute;
+        top: 64px;
+        left: 0;
+        right: 0;
+        padding: var(--space-sm) var(--space-md);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .mobile-nav.open {
+        display: flex;
+        animation: slideDown 0.3s ease forwards;
+    }
+    @media (min-width: 768px) {
+        .mobile-nav.open {
+            display: none;
+        }
+    }
+    
+    .mobile-nav a {
+        display: flex;
+        align-items: center;
+        height: 48px;
+        text-decoration: none;
+        color: var(--text-muted);
+        font-family: var(--font-body);
+        font-weight: 500;
+        font-size: 1.1rem;
+        border-bottom: 1px solid var(--border);
+    }
+    .mobile-nav a:last-child {
+        border-bottom: none;
+    }
+    .mobile-nav a.active {
+        color: var(--accent);
+    }
+    
+    @keyframes slideDown {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+        if (btn && menu) {
+            btn.addEventListener('click', () => {
+                menu.classList.toggle('open');
+                btn.classList.toggle('open');
+            });
+        }
+
+        const themeBtn = document.getElementById('theme-toggle');
+        if (themeBtn) {
+            themeBtn.addEventListener('click', () => {
+                const current = document.documentElement.dataset.theme;
+                const next = current === 'dark' ? 'light' : 'dark';
+                document.documentElement.dataset.theme = next;
+                localStorage.setItem('tcl_theme', next);
+            });
+        }
+    });
+</script>

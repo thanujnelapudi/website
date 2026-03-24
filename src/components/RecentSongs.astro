@@ -1,0 +1,72 @@
+---
+import SongCard from './SongCard.astro';
+import { getCollection } from 'astro:content';
+
+const allSongs = await getCollection('songs');
+const sortedSongs = [...allSongs].sort((a, b) => a.data.slug.localeCompare(b.data.slug));
+const recentSongs = sortedSongs.slice(0, 6);
+---
+
+<section class="home-section">
+    <div class="container fade-up">
+        <span class="section-label">New Additions</span>
+        <div class="header-row">
+            <h2 class="section-heading" style="margin:0;">New Additions</h2>
+            <a href="/songs" class="view-all">View All <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px; margin-left:2px;"><polyline points="9 18 15 12 9 6"/></svg></a>
+        </div>
+        
+        <div class="song-list">
+            {recentSongs.map((song, i) => (
+                <div class="fade-up" style={`animation-delay: ${i * 0.04}s`}>
+                    <SongCard
+                        title={song.data.title}
+                        titleTransliterated={song.data.titleTransliterated}
+                        slug={song.data.slug}
+                        ministry={song.data.ministry}
+                        mood={song.data.mood}
+                        era={song.data.era}
+                    />
+                </div>
+            ))}
+        </div>
+    </div>
+</section>
+
+<style>
+    .home-section {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: var(--space-3xl) var(--space-xl);
+    }
+    
+    @media (max-width: 768px) {
+        .home-section {
+            padding: var(--space-xl) var(--space-md);
+        }
+    }
+    
+    .header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        margin-bottom: var(--space-lg);
+    }
+    
+    .view-all {
+        color: var(--accent);
+        font-family: var(--font-body);
+        font-size: 0.95rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: filter 0.2s ease;
+    }
+    
+    .view-all:hover {
+        filter: brightness(1.2);
+    }
+    
+    .song-list {
+        display: flex;
+        flex-direction: column;
+    }
+</style>

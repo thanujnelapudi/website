@@ -1,0 +1,18 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FavoritesPage from '../components/FavoritesPage.tsx';
+---
+
+<BaseLayout title="My Favorites — Telugu Worship">
+    <div class="page-container">
+        <FavoritesPage client:load />
+    </div>
+</BaseLayout>
+
+<style>
+    .page-container {
+        padding: 3rem 0;
+        background-color: var(--color-bg);
+        min-height: calc(100vh - 200px);
+    }
+</style>

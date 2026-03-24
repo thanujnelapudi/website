@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SongsBrowser from '../../components/SongsBrowser.tsx';
+import { getCollection } from 'astro:content';
+
+const allSongs = await getCollection('songs');
+
+const serializedSongs = allSongs.map(song => ({
+    id: song.id,
+    title: song.data.title,
+    titleTransliterated: song.data.titleTransliterated,
+    slug: song.data.slug,
+    ministry: song.data.ministry,
+    mood: song.data.mood || [],
+    occasion: song.data.occasion || [],
+    era: song.data.era || 'modern'
+}));
+---
+
+<BaseLayout title="All Songs — Telugu Worship">
+    <SongsBrowser client:load songs={serializedSongs} />
+</BaseLayout>

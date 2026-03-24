@@ -1,0 +1,144 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const allMinistries = await getCollection('ministries');
+const allSongs = await getCollection('songs');
+
+const ministriesWithCounts = allMinistries.map(ministry => {
+    const count = allSongs.filter(song => song.data.ministry === ministry.data.name).length;
+    return { ...ministry, songCount: count };
+}).sort((a, b) => b.songCount - a.songCount);
+
+const getMinistryColor = (name: string) => {
+    const l = name.toLowerCase();
+    if (l.includes('hosanna')) return 'var(--ministry-hosanna)';
+    if (l.includes('benny')) return 'var(--ministry-benny)';
+    if (l.includes('raj')) return 'var(--ministry-raj)';
+    return 'var(--ministry-default)';
+};
+---
+
+<BaseLayout title="Ministries — Telugu Worship">
+    <div class="ministries-page">
+        <div class="container fade-up">
+            <header class="page-header">
+                <h1 class="page-title">Browse Ministries</h1>
+                <p class="page-subtitle">Discover songs compiled and published from various Telugu Christian ministries across the world.</p>
+            </header>
+            
+            <div class="ministries-list">
+                {ministriesWithCounts.map(m => (
+                    <a href={`/ministries/${m.id}`} class="ministry-banner" style={`border-left-color: ${getMinistryColor(m.data.name)}`}>
+                        <div class="banner-content">
+                            <h2 class="m-name">{m.data.name}</h2>
+                            <div class="m-meta">
+                                <span class="m-count">{m.songCount} Songs</span>
+                                <span class="m-chevron">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="9 18 15 12 9 6"/>
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+                    </a>
+                ))}
+            </div>
+        </div>
+    </div>
+</BaseLayout>
+
+<style>
+    .ministries-page {
+        padding: var(--space-3xl) 0;
+        background-color: var(--bg);
+        min-height: calc(100vh - 200px);
+    }
+    
+    .page-header {
+        margin-bottom: var(--space-3xl);
+        text-align: center;
+    }
+    .page-title {
+        font-size: clamp(2rem, 5vw, 3rem);
+        font-family: var(--font-display);
+        color: var(--text);
+        margin-bottom: 16px;
+    }
+    .page-subtitle {
+        color: var(--text-muted);
+        font-size: 1.1rem;
+        max-width: 600px;
+        margin: 0 auto;
+        font-family: var(--font-body);
+        line-height: 1.6;
+    }
+
+    .ministries-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .ministry-banner {
+        display: block;
+        height: 72px;
+        border-radius: 6px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-left: 3px solid var(--ministry-default);
+        text-decoration: none;
+        overflow: hidden;
+        position: relative;
+        transition: background 0.2s ease, border-left-color 0.2s ease, filter 0.2s ease;
+    }
+
+    .ministry-banner:hover {
+        background: var(--surface-2);
+        filter: brightness(1.05); /* slightly brightens the left border color */
+    }
+
+    .banner-content {
+        padding: 0 var(--space-xl);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 100%;
+    }
+
+    .m-name {
+        font-family: var(--font-display);
+        font-size: 1.1rem;
+        margin: 0;
+        font-weight: 600;
+        color: var(--text);
+    }
+
+    .m-meta {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .m-count {
+        font-family: var(--font-body);
+        font-size: 0.85rem;
+        color: var(--text-muted);
+    }
+
+    .m-chevron {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-subtle);
+        transition: transform 0.2s ease;
+    }
+    
+    .ministry-banner:hover .m-chevron {
+        transform: translateX(4px);
+    }
+
+    @media (max-width: 768px) {
+        .banner-content { padding: 0 var(--space-lg); }
+    }
+</style>

@@ -1,11 +1,123 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HeroSearch from '../components/HeroSearch.tsx';
+import FeaturedSongs from '../components/FeaturedSongs.astro';
+import BrowseBySection from '../components/BrowseBySection.astro';
+import RecentSongs from '../components/RecentSongs.astro';
+import { getCollection } from 'astro:content';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const allSongs = await getCollection('songs');
+
+// Map to simplified objects for React props
+const searchableSongs = allSongs.map(song => ({
+    id: song.id,
+    title: song.data.title,
+    titleTransliterated: song.data.titleTransliterated,
+    slug: song.data.slug,
+    ministry: song.data.ministry
+}));
+
+const ministriesPills = [
+    { label: "Hosanna Ministries", slug: "hosanna-ministries", cssClass: "pill-hosanna" },
+    { label: "Benny Joshua", slug: "benny-joshua", cssClass: "pill-benny" },
+    { label: "Raj Prakash Paul", slug: "raj-prakash-paul", cssClass: "pill-raj" },
+    { label: "All Ministries →", slug: "", cssClass: "pill-default" }
+];
 ---
 
-<Layout>
-	<Welcome />
-</Layout>
+<BaseLayout 
+    title="Telugu Worship — Telugu Christian Song Lyrics & Chords" 
+    description="Find Telugu Christian song lyrics, chords, Bible verses and build worship setlists"
+>
+    <HeroSearch client:load songs={searchableSongs} />
+    
+    <FeaturedSongs />
+    
+    <BrowseBySection />
+    
+    <RecentSongs />
+    
+    <!-- Ministries Strip -->
+    <section class="home-section ministries-section fade-up">
+        <div class="container">
+            <span class="section-label">Browse by Ministry</span>
+            <h2 class="section-heading" style="display: none;">Browse by Ministry</h2>
+            
+            <div class="ministries-row">
+                {ministriesPills.map(min => (
+                    <a href={`/ministries${min.slug ? '/' + min.slug : ''}`} class={`ministry-pill ${min.cssClass}`}>
+                        {min.label}
+                    </a>
+                ))}
+            </div>
+        </div>
+    </section>
+</BaseLayout>
+
+<style>
+    .home-section {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: var(--space-3xl) var(--space-xl);
+    }
+    
+    @media (max-width: 768px) {
+        .home-section {
+            padding: var(--space-xl) var(--space-md);
+        }
+    }
+    
+    .ministries-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+    
+    .ministry-pill {
+        padding: 10px 20px;
+        border-radius: 999px;
+        border: 2px solid;
+        background: transparent;
+        font-family: var(--font-body);
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+    
+    .pill-hosanna {
+        border-color: var(--ministry-hosanna);
+        color: var(--ministry-hosanna);
+    }
+    .pill-hosanna:hover {
+        background: var(--ministry-hosanna);
+        color: #fff;
+    }
+    
+    .pill-benny {
+        border-color: var(--ministry-benny);
+        color: var(--ministry-benny);
+    }
+    .pill-benny:hover {
+        background: var(--ministry-benny);
+        color: #fff;
+    }
+    
+    .pill-raj {
+        border-color: var(--ministry-raj);
+        color: var(--ministry-raj);
+    }
+    .pill-raj:hover {
+        background: var(--ministry-raj);
+        color: #fff;
+    }
+    
+    .pill-default {
+        border-color: var(--accent);
+        color: var(--accent);
+    }
+    .pill-default:hover {
+        background: var(--accent);
+        color: #fff;
+    }
+</style>

@@ -1,0 +1,233 @@
+---
+---
+<footer class="footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="brand">
+                <a href="/" class="logo">
+                    <span class="cross">✝</span>
+                    <span class="logo-text">Telugu Worship</span>
+                </a>
+                <p class="tagline">Worship in Spirit and in Truth — John 4:24</p>
+            </div>
+            
+            <div class="footer-col">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/songs">All Songs</a></li>
+                    <li><a href="/ministries">Ministries</a></li>
+                    <li><a href="/setlist">Setlist Builder</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h3>Occasions</h3>
+                <ul>
+                    <li><a href="/songs?occasion=sunday-worship">Sunday Worship</a></li>
+                    <li><a href="/songs?occasion=christmas">Christmas</a></li>
+                    <li><a href="/songs?occasion=easter">Easter</a></li>
+                    <li><a href="/songs?occasion=wedding">Wedding</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h3>About</h3>
+                <p class="connect-note">Built for Telugu worship communities to easily find lyrics, chords, and scriptures.</p>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; {new Date().getFullYear()} Telugu Worship.</p>
+            
+            <button id="footer-theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+                <span class="sun">☀️ Light Mode</span>
+                <span class="moon">🌙 Dark Mode</span>
+            </button>
+        </div>
+    </div>
+</footer>
+
+<style>
+    .footer {
+        background: var(--bg-2);
+        border-top: 1px solid var(--border);
+        padding: var(--space-3xl) 0 var(--space-xl) 0;
+        margin-top: auto;
+    }
+    
+    .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 0 var(--space-xl);
+    }
+    @media (max-width: 768px) {
+        .container {
+            padding: 0 var(--space-md);
+        }
+    }
+    
+    .footer-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--space-xl);
+        margin-bottom: var(--space-2xl);
+    }
+    @media (min-width: 768px) {
+        .footer-grid {
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+        }
+    }
+    
+    /* Brand */
+    .logo {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        text-decoration: none;
+        color: var(--text);
+        margin-bottom: var(--space-sm);
+    }
+    .cross {
+        color: var(--accent);
+        font-size: 1.1em;
+        line-height: 1;
+    }
+    .logo-text {
+        font-family: var(--font-display);
+        font-size: 1.3rem;
+        font-weight: 600;
+        line-height: 1;
+    }
+    
+    .tagline {
+        color: var(--text-muted);
+        font-family: var(--font-display);
+        font-style: italic;
+        font-size: 1.1rem;
+        margin-top: 4px;
+    }
+    
+    /* Columns */
+    .footer-col h3 {
+        color: var(--text);
+        font-family: var(--font-display);
+        font-size: 1.2rem;
+        margin-bottom: var(--space-md);
+        font-weight: 600;
+    }
+    
+    .footer-col ul {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .footer-col a {
+        color: var(--text-muted);
+        text-decoration: none;
+        font-family: var(--font-body);
+        font-size: 0.95rem;
+        transition: color 0.2s ease;
+    }
+    
+    .footer-col a:hover {
+        color: var(--text);
+    }
+    
+    .connect-note {
+        color: var(--text-muted);
+        line-height: 1.6;
+        font-size: 0.95rem;
+    }
+    
+    /* Bottom Bar */
+    .footer-bottom {
+        border-top: 1px solid var(--border);
+        padding-top: var(--space-lg);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-md);
+        color: var(--text-muted);
+        font-size: 0.9rem;
+    }
+    @media (min-width: 768px) {
+        .footer-bottom {
+            flex-direction: row;
+            justify-content: space-between;
+        }
+    }
+    
+    /* Secondary Theme Toggle */
+    .theme-toggle {
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--text-muted);
+        border-radius: 999px;
+        padding: 6px 16px;
+        font-family: var(--font-body);
+        font-size: 0.85rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+        height: 32px;
+        min-width: 120px;
+        justify-content: center;
+        transition: border-color 0.2s ease, color 0.2s ease;
+    }
+    .theme-toggle:hover {
+        border-color: var(--border-hover);
+        color: var(--text);
+    }
+    .theme-toggle span {
+        display: block;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+        position: absolute;
+        white-space: nowrap;
+    }
+    html[data-theme="dark"] .moon {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    html[data-theme="dark"] .sun {
+        transform: translateY(0);
+        opacity: 1;
+        position: static;
+    }
+    html:not([data-theme="dark"]) .sun {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    html:not([data-theme="dark"]) .moon {
+        transform: translateY(0);
+        opacity: 1;
+        position: static;
+    }
+    html[data-theme="light"] .sun {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    html[data-theme="light"] .moon {
+        transform: translateY(0);
+        opacity: 1;
+        position: static;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const themeBtn = document.getElementById('footer-theme-toggle');
+        if (themeBtn) {
+            themeBtn.addEventListener('click', () => {
+                const current = document.documentElement.dataset.theme;
+                const next = current === 'dark' ? 'light' : 'dark';
+                document.documentElement.dataset.theme = next;
+                localStorage.setItem('tcl_theme', next);
+            });
+        }
+    });
+</script>

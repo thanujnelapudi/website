@@ -1,0 +1,106 @@
+---
+interface Props {
+    name: string;
+    description?: string;
+    website?: string;
+    songCount: number;
+    slug: string;
+}
+
+const { name, description, website, songCount, slug } = Astro.props;
+---
+
+<a href={`/ministries/${slug}`} class="ministry-card">
+    <div class="card-content">
+        <h3 class="ministry-name">{name}</h3>
+        {description && <p class="description">{description}</p>}
+        
+        <div class="meta-footer">
+            <span class="song-count">{songCount} Songs</span>
+            {website && (
+                <span class="website-link" onclick="event.stopPropagation();">
+                    <a href={website} target="_blank" rel="noopener noreferrer">Website ↗</a>
+                </span>
+            )}
+        </div>
+    </div>
+</a>
+
+<style>
+    .ministry-card {
+        display: block;
+        background-color: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: 12px;
+        padding: 1.5rem;
+        text-decoration: none;
+        color: var(--color-text);
+        transition: all 0.2s ease;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .ministry-card:hover {
+        border-color: var(--color-accent);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    
+    .card-content {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+    }
+    
+    .ministry-name {
+        font-size: 1.3rem;
+        color: var(--color-text);
+        margin-bottom: 0.8rem;
+        font-weight: 600;
+    }
+    
+    .description {
+        color: var(--color-text-muted);
+        font-size: 0.95rem;
+        line-height: 1.5;
+        margin-bottom: 1.5rem;
+        flex: 1;
+        /* Line clamping */
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    .meta-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-top: 1px solid var(--color-border);
+        padding-top: 1rem;
+        margin-top: auto;
+    }
+    
+    .song-count {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--color-accent);
+        background: rgba(232, 168, 56, 0.1);
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+    }
+    
+    .website-link a {
+        color: var(--color-text-muted);
+        text-decoration: none;
+        font-size: 0.85rem;
+        transition: color 0.2s;
+    }
+    
+    .website-link a:hover {
+        color: var(--color-primary);
+        text-decoration: underline;
+    }
+</style>
