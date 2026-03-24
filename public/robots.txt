@@ -1,5 +1,5 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://keerthana.vercel.app/sitemap-index.xml
+Sitemap: https://keertana.vercel.app/sitemap-index.xml
 

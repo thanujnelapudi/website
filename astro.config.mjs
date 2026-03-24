@@ -9,7 +9,7 @@ const isBuild = process.env.npm_lifecycle_event === 'build';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://keerthana.vercel.app',
+  site: 'https://keertana.vercel.app',
   integrations: [
     sanity({
       projectId: 'ywnznmes',

@@ -17,7 +17,7 @@ const {
   structuredData
 } = Astro.props;
 
-const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://keerthana.vercel.app');
+const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://keertana.vercel.app');
 ---
 
 <!DOCTYPE html>
@@ -36,14 +36,14 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://keerthan
     <meta property="og:url" content={Astro.url} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={new URL(image, Astro.site || 'https://keerthana.vercel.app')} />
+    <meta property="og:image" content={new URL(image, Astro.site || 'https://keertana.vercel.app')} />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content={Astro.url} />
     <meta property="twitter:title" content={title} />
     <meta property="twitter:description" content={description} />
-    <meta property="twitter:image" content={new URL(image, Astro.site || 'https://keerthana.vercel.app')} />
+    <meta property="twitter:image" content={new URL(image, Astro.site || 'https://keertana.vercel.app')} />
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

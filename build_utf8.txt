@@ -1,0 +1,55 @@
+
+> telugu-christian-lyrics@0.0.1 build
+> astro build
+
+[2m20:44:01[22m [34m[vite][39m Re-optimizing dependencies because vite config has changed
+[2m20:44:02[22m [34m[content][39m Syncing content
+[2m20:44:02[22m [34m[content][39m Synced content
+[2m20:44:02[22m [34m[types][39m Generated [2m1.27s[22m
+[2m20:44:02[22m [34m[build][39m output: [34m"static"[39m
+[2m20:44:02[22m [34m[build][39m mode: [34m"static"[39m
+[2m20:44:02[22m [34m[build][39m directory: [34mD:\personal\Projects\telugu-christian-lyrics\dist\[39m
+[2m20:44:02[22m [34m[build][39m Collecting build info...
+[2m20:44:02[22m [34m[build][39m [32m✓ Completed in 1.33s.[39m
+[2m20:44:02[22m [34m[build][39m Building static entrypoints...
+[2m20:44:04[22m [34m[vite][39m [32m✓ built in 1.89s[39m
+[2m20:44:05[22m [34m[vite][39m [32m✓ built in 1.03s[39m
+[2m20:44:05[22m [34m[build][39m Rearranging server assets...
+
+[42m[30m generating static routes [39m[49m
+[2m20:44:06[22m   [34m├─[39m [2m/artists/a-r-stevenson/index.html[22m [2m(+29ms)[22m 
+[2m20:44:06[22m   [34m├─[39m [2m/artists/benny-joshua/index.html[22m [2m(+6ms)[22m 
+[2m20:44:06[22m   [34m├─[39m [2m/artists/dr-p-satish-kumar/index.html[22m [2m(+7ms)[22m 
+[2m20:44:06[22m   [34m├─[39m [2m/artists/hosanna-ministries/index.html[22m [2m(+6ms)[22m 
+[2m20:44:06[22m   [34m├─[39m [2m/artists/john-jebaraj/index.html[22m [2m(+6ms)[22m 
+[2m20:44:06[22m   [34m├─[39m [2m/artists/jyothi-raju/index.html[22m [2m(+5ms)[22m 
+[2m20:44:06[22m   [34m├─[39m [2m/artists/kripal-mohan/index.html[22m [2m(+24ms)[22m 
+[2m20:44:06[22m   [34m├─[39m [2m/artists/ravinder-vottepu/index.html[22m [2m(+7ms)[22m 
+[2m20:44:06[22m   [34m├─[39m [2m/artists/s-j-berchmans/index.html[22m [2m(+8ms)[22m 
+[2m20:44:06[22m   [34m├─[39m [2m/artists/unknown-ministry/index.html[22m [2m(+7ms)[22m 
+[2m20:44:06[22m   [34m├─[39m [2m/artists/index.html[22m [2m(+312ms)[22m 
+[2m20:44:06[22m   [34m├─[39m [2m/favorites/index.html[22m [2m(+29ms)[22m 
+[2m20:44:06[22m   [34m├─[39m [2m/ministries/calvary-temple/index.html[22m [2m(+8ms)[22m 
+[2m20:44:06[22m   [34m├─[39m [2m/ministries/hosanna-ministries/index.html[22m [2m(+6ms)[22m 
+[2m20:44:06[22m   [34m├─[39m [2m/ministries/unknown-ministry/index.html[22m [2m(+8ms)[22m 
+[2m20:44:06[22m   [34m├─[39m [2m/ministries/index.html[22m [2m(+220ms)[22m 
+[2m20:44:07[22m   [34m├─[39m [2m/setlist/index.html[22m [2m(+11ms)[22m 
+[2m20:44:07[22m   [34m├─[39m [2m/songs/aaradhana-aaradhana-athma-tho/index.html[22m[31m[1m20:44:07[22m [ERROR][39m TypeError: Cannot read properties of undefined (reading 'title')
+    at file:///D:/personal/Projects/telugu-christian-lyrics/dist/.prerender/chunks/_slug__DWoKrYzx.mjs:322:105
+    at [slug] (file:///D:/personal/Projects/telugu-christian-lyrics/dist/.prerender/chunks/BaseLayout_Ct6GeCiQ.mjs:20:12)
+    at callComponentAsTemplateResultOrResponse (file:///D:/personal/Projects/telugu-christian-lyrics/dist/.prerender/chunks/prerender_CK5f051k.mjs:4228:31)
+    at renderToString (file:///D:/personal/Projects/telugu-christian-lyrics/dist/.prerender/chunks/prerender_CK5f051k.mjs:4146:32)
+    at renderPage (file:///D:/personal/Projects/telugu-christian-lyrics/dist/.prerender/chunks/prerender_CK5f051k.mjs:5447:18)
+    at lastNext (file:///D:/personal/Projects/telugu-christian-lyrics/dist/.prerender/chunks/prerender_CK5f051k.mjs:8132:31)
+    at async callMiddleware (file:///D:/personal/Projects/telugu-christian-lyrics/dist/.prerender/chunks/prerender_CK5f051k.mjs:5540:10)
+    at async RenderContext.render (file:///D:/personal/Projects/telugu-christian-lyrics/dist/.prerender/chunks/prerender_CK5f051k.mjs:8166:73)
+    at async BuildApp.render (file:///D:/personal/Projects/telugu-christian-lyrics/dist/.prerender/chunks/prerender_CK5f051k.mjs:9071:20)
+    at async generatePathWithPrerenderer (file:///D:/personal/Projects/telugu-christian-lyrics/node_modules/astro/dist/core/build/generate.js:251:16)
+[31m[1m20:44:07[22m [ERROR] [build][39m Caught error rendering /songs/aaradhana-aaradhana-athma-tho: TypeError: Cannot read properties of undefined (reading 'title')
+Cannot read properties of undefined (reading 'title')
+  [1mStack trace:[22m
+[2m    at file:///D:/personal/Projects/telugu-christian-lyrics/dist/.prerender/chunks/_slug__DWoKrYzx.mjs:322:105
+    at callComponentAsTemplateResultOrResponse (file:///D:/personal/Projects/telugu-christian-lyrics/dist/.prerender/chunks/prerender_CK5f051k.mjs:4228:31)
+    at renderPage (file:///D:/personal/Projects/telugu-christian-lyrics/dist/.prerender/chunks/prerender_CK5f051k.mjs:5447:18)
+    at async callMiddleware (file:///D:/personal/Projects/telugu-christian-lyrics/dist/.prerender/chunks/prerender_CK5f051k.mjs:5540:10)
+    at async BuildApp.render (file:///D:/personal/Projects/telugu-christian-lyrics/dist/.prerender/chunks/prerender_CK5f051k.mjs:9071:20)[22m
